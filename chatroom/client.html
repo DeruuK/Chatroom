@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<head>
+   <meta charset="utf-8"/>
+   <title>My Web Page</title>
+<!--	<link rel="stylesheet" type="text/css" href="module6.css"> -->
+	<style type="text/css">
+		body{
+   	width: 80%; /* how wide to make your web page */
+   	background-color: lightblue; /* what color to make the background */
+   	margin: 0 auto;
+   	padding: 0;
+   	font:12px/16px Verdana, sans-serif; /* default font */
+   }
+   div#main{
+      display: none;
+   	background-color: white;
+		width: 100%;
+		height: 700px;
+   	margin: 0;
+   	padding: 10px;
+   }
+	div#pheader{
+      display: block;
+   	background-color: white;
+		width: 100%;
+   	margin: 0;
+   	padding: 10px;
+   }
+   div#login{
+        text-align: center;
+   }
+   div#sayhi{
+      text-align: left;
+      margin: 15%;
+   }
+   .floatpart{
+		display: inline-block;
+		margin: 10px;
+		height: 600px;
+		padding-left: 5px;
+	}
+   div#pleft{
+      float: left;
+      width: 20%;
+      position: relative;
+   }
+   div#pright{
+      float: right;
+      width: 35%;
+      position: relative;	
+   }
+	.subfloatpart{
+		display: inline-block;
+		height: 30%;
+		margin-bottom: 20px;
+		padding-left: 5px;
+	}
+	div#subleft{
+		float: left;
+		width: 45%;
+	}
+	
+	div#subright{
+		float:right;
+		width: 45%;
+	}
+	
+	div#pcenter{
+		width:35%;
+	}
+	
+   h1{
+      text-align: center;
+      color: darkblue;
+      font-family: 'Chalkduster', sans-serif;
+      font-size: 50px;
+      text-shadow: 5px 5px white;
+      margin-bottom: 15px;      
+   }
+	div#userlist{
+		border-left: groove;
+		border-color: lightblue;
+		overflow: scroll;	
+	}
+	
+	div#adminsee{
+		border-left: groove;
+		border-color: lightblue;
+		overflow: scroll;	
+	}
+	
+	div#roomlist{
+		height: 50%;
+		border-left: groove;
+		border-color: lightblue;
+		padding-left: 5px;
+		overflow: scroll;
+	}
+	textarea {
+		width: 80%;
+	}
+	.chatinput{
+		width: 100px;
+		height: 40px;
+	}
+	.infoinput{
+		width: 80%;
+	}
+	.log{
+		width: 90%;
+		border-left: groove darkblue;
+		border-right: groove darkblue;
+		color: darkblue;
+		font-family: 'American Typewriter', sans-serif;
+		border-radius: 12px;
+		padding: 5px;
+		overflow: scroll;
+	}
+	#perchatlog{
+		height: 30%;
+		background-image: url();
+	}
+	#chatlog{
+		height: 65%;
+		background-image: url();
+	}
+	div#newroom{
+		height: 45%;
+		border: 1px dotted lightblue;
+		border-radius: 12px;
+		padding: 5px;
+	}
+	div#roomchatinput{
+		width: 90%;
+		border: 1px dotted lightblue;
+		border-radius: 12px;
+		padding: 5px;
+		margin-top: 20px;
+		
+	}
+	div#perchatinput{
+		width: 90%;
+		border: 1px dotted lightblue;
+		border-radius: 12px;
+		padding: 5px;
+		margin-top: 20px;
+	}
+	
+	h3#allusers{
+		display: none;
+	}
+	img{
+		width: 85%;
+	}
+
+	</style>
+   
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>   
+   <script src="/socket.io/socket.io.js"></script>
+   
+</head>
+<body>
+   <div id="pheader">
+      <div id=phtitle>
+         <h1>ChatRoomer</h1><br>
+      </div>
+      <div id="login">
+         <form id="loginform">
+				<p>Please input your nickname: </p>
+            <input type="text" id="nickname"/>
+            <input type="submit" id="login_btn"/>
+         </form>
+      </div>
+      <h3 id="sayhi">Hi there!</h3>
+		<hr>
+      
+   </div>
+<div id="main">
+   
+   <div id="pleft" class="floatpart">
+		<div id="newroom">
+			<form id="newroomform">
+				<p>*Room name: </p>
+				<input type="text" id="newroomname" class="infoinput"/>
+				<p>Password</p>
+				<input type="password" id="newroompsw" class="infoinput"/>
+				<p>If this is a private room, please input password</p>
+				<br><input type="submit" id="newroom_btn" value="create"/>
+			</form>
+		</div>
+      <h3>Room List</h3>
+		<div id="roomlist">
+      </div>
+   </div>
+   <div id="pcenter" class="floatpart">
+      <h3 id="roomchat">Lobby</h3>
+		<div id="chatlog" class="log"></div>
+      
+      <div id="roomchatinput">
+         <label for="rmchatimg">Change public room background</label><input type = "file" id="rmchatimg" style="visibility:hidden;"/>
+			<textarea type="text" id="message_input" name="message_input" rows="2"></textarea>
+ <!--        <input type="text" id="message_input" class="chatinput"/>-->
+         <br><button id="rmsend">send</button>
+      </div>
+   </div>
+   <div id="pright" class="floatpart">
+		<div id="subleft" class=="subfloatpart">
+			<h3>User List</h3>
+			<div id="userlist"></div>
+		</div>
+		<div id="subright" class="subfloatpart">
+			<h3 id="allusers">All Users</h3>
+			<div id="adminsee">OOOOOO</div>
+		</div>
+      <div id="perchatlog" class="log"></div>
+      <div id="perchatinput">
+         <label for="prchatimg">Change private room background</label><input type = "file" id="prchatimg" style="visibility:hidden;"/>
+			<p>To: </p>
+			<input type="text" id="towho" class="infoinput"/><br>
+			<textarea type="text" id="primsg_input" name="primsg_input" rows="2"></textarea>
+<!--			<input type="text" id="primsg_input" class="chatinput"/>-->
+         <br><button id="pesend">send</button>
+      </div>
+   </div>
+   
+</div>
+</body>
+<script type ="text/javascript">
+    
+	var roomlist = [];   
+   var roominfo = {};
+	var curuser;
+	var alluserlist = [];
+      
+   var socketio = io.connect();
+   socketio.on("message_to_client",function(data) {
+      //Append an HR thematic break and the escaped HTML of the new message
+		if (data.pub) {
+         document.getElementById("chatlog").appendChild(document.createElement("hr"));
+			var showtext = data.from+": "+data.message;
+			document.getElementById("chatlog").appendChild(document.createTextNode(showtext));
+      }else{
+			document.getElementById("perchatlog").appendChild(document.createElement("hr"));
+			var pshowtext = data.from+": "+data.message;
+			document.getElementById("perchatlog").appendChild(document.createTextNode(pshowtext));
+		}
+      
+   });
+
+//show userlist      
+   socketio.on("showusers", function(data){
+		var tchild=document.getElementById("userlist").firstChild;
+		if (typeof tchild !== 'undefined' && tchild !== null){
+			while (tchild) {
+		      document.getElementById("userlist").removeChild(tchild);
+            tchild=document.getElementById("userlist").firstChild;
+		   }
+		 }
+		 
+		 var kchild=document.getElementById("adminsee").firstChild;
+		if (typeof kchild !== 'undefined' && kchild !== null){
+			while (kchild) {
+		      document.getElementById("adminsee").removeChild(kchild);
+            kchild=document.getElementById("adminsee").firstChild;
+		   }
+		 }
+		
+//		alert("we are in showusers on, userlist is "+data+", the data.length is "+data.length+", The data[1] is "+data[1]);
+		var admin = roominfo[data.room].admin;
+		if (data.room !== "lobby") {
+			// create admin button.
+			var admin_btn = document.createElement("button");
+			admin_btn.setAttribute("class", "user");
+			admin_btn.setAttribute("data-id", admin);
+			admin_btn.innerHTML = admin;
+			var br = document.createElement("br");
+			var text = document.createTextNode("Admin: ");
+			document.getElementById("userlist").appendChild(text);
+			document.getElementById("userlist").appendChild(admin_btn);
+			document.getElementById("userlist").appendChild(br);
+			document.getElementById("userlist").appendChild(br);	
+//			document.getElementById("roomadmin").innerHTML = "Admin: " + admin;   
+      }
+		
+		var list = roominfo[data.room].users;
+		var banlist = roominfo[data.room].ban;
+		if(admin !== curuser){
+			
+			for (var i=0; i<list.length; i++){
+			   var auser = document.createElement("button");
+				var brtag = document.createElement("br");
+			   auser.setAttribute("class","user");
+				auser.setAttribute("data-id", list[i]);
+				auser.innerHTML = list[i];
+			   document.getElementById("userlist").appendChild(auser);
+				document.getElementById("userlist").appendChild(brtag);
+//    	     document.getElementById("userlist").appendChild(bre);
+			}
+		}else{
+			//show all users in this chat room
+			for (var j=0; j<list.length; j++) {
+            var aauser = document.createElement("button");
+				var kick = document.createElement("button");
+				var ban = document.createElement("button");
+				var brg = document.createElement("br");
+				// set user button
+				aauser.setAttribute("class","user");
+				aauser.setAttribute("data-id", list[j]);
+				aauser.innerHTML = list[j];
+				// set kick button
+				kick.setAttribute("class","kick");
+				kick.setAttribute("data-id", list[j]);
+				kick.innerHTML = "kichoff";
+				// set ban button
+				ban.setAttribute("class","ban");
+				ban.setAttribute("data-id", list[j]);
+				ban.innerHTML = "ban";
+				// append Child
+				document.getElementById("userlist").appendChild(aauser);
+				document.getElementById("userlist").appendChild(kick);
+				document.getElementById("userlist").appendChild(ban);
+				document.getElementById("userlist").appendChild(brg);
+         }
+			// show all users
+			$("#allusers").show();
+			//document.getElementById("adminsee").appendChild(ter);
+//			alert("alluserlist.length = "+alluserlist.length);
+			for(var k=0; k<alluserlist.length; k++){
+				if (!list.includes(alluserlist[k]) && admin !== alluserlist[k]) {	// this user is not in this room
+					var kuser = document.createTextNode(alluserlist[k]);
+					if (banlist.includes(alluserlist[k])) {	// this user was banned from this room
+						var unban = document.createElement("button");
+						var ter = document.createElement("br");
+						unban.setAttribute("class","unban");
+						unban.setAttribute("data-id", alluserlist[k]);
+						unban.innerHTML = "cancel ban";
+						document.getElementById("adminsee").appendChild(kuser);
+						document.getElementById("adminsee").appendChild(unban);
+						document.getElementById("adminsee").appendChild(ter);
+					}else{
+						var invite = document.createElement("button");
+						var te = document.createElement("br");
+						invite.setAttribute("class","invite");
+						invite.setAttribute("data-id", alluserlist[k]);
+						invite.innerHTML = "invite";
+						document.getElementById("adminsee").appendChild(kuser);
+						document.getElementById("adminsee").appendChild(invite);
+						document.getElementById("adminsee").appendChild(te);
+					}
+            }	
+			}
+		}
+		
+		
+		document.getElementById("roomchat").innerHTML = data.room;
+   });
+
+// show roomlist	
+	socketio.on("showrooms", function(data){
+		var tchild=document.getElementById("roomlist").firstChild;
+		if (typeof tchild !== 'undefined' && tchild !== null){
+			while (tchild) {
+		      document.getElementById("roomlist").removeChild(tchild);
+            tchild=document.getElementById("roomlist").firstChild;
+		   }
+		 }
+		 
+		 roomlist = data.roomlist;
+		 roominfo = data.roominfo;
+		 alluserlist = data.alluserlist;
+		
+//		alert("we are in showusers on, userlist is "+data+", the data.length is "+data.length+", The data[1] is "+data[1]);
+      for (var i=0; i<roomlist.length; i++){
+			// form
+			var name = roomlist[i];
+			
+			var rform = document.createElement("form");
+			rform.setAttribute("class", "rform");
+			rform.setAttribute("id", name+"form" );
+			// hidden input for roomname
+			var rname = document.createElement("input");
+			rname.setAttribute("id", name+"name");
+			rname.setAttribute("value", name);
+			rname.setAttribute("type", "hidden");
+			
+			if (roominfo[name].havepass) {
+				// if have password ,show input password
+				var rpsw = document.createElement("input");
+				rpsw.setAttribute("id", name+"psw");
+				rpsw.setAttribute("type", "password");
+				// submit button
+				var aroom = document.createElement("button");
+				aroom.setAttribute("class", "priroom_btn");
+				aroom.setAttribute("data-id", name);
+				aroom.innerHTML = name;
+				
+				var brtag = document.createElement("br");
+				
+				document.getElementById("roomlist").appendChild(rform);
+				document.getElementById(name+"form").appendChild(rname);
+				document.getElementById(name+"form").appendChild(aroom);
+				document.getElementById(name+"form").appendChild(rpsw);
+				document.getElementById("roomlist").appendChild(brtag);		
+         }else{
+				var paroom = document.createElement("button");
+				paroom.setAttribute("class", "pubroom_btn");
+				paroom.setAttribute("data-id", name);
+				paroom.innerHTML = name;
+				
+				pbrtag = document.createElement("br");
+				
+				document.getElementById("roomlist").appendChild(rform);
+				document.getElementById(name+"form").appendChild(rname);
+				document.getElementById(name+"form").appendChild(paroom);
+				document.getElementById("roomlist").appendChild(pbrtag);	
+			}
+			
+      }
+   });
+	
+	socketio.on("bekicked", function(){
+		enroom("lobby", false);
+	});
+	
+	socketio.on("beinvited", function(data){
+		var room = data.room;
+//		alert("have pass? "+ data.pub);
+		confirmfun(room, data.pub);
+	});
+	
+	socketio.on("sendimg", function(data){
+		var pub = data.pub;
+		
+		if (pub) {
+//		alert("in sendimg, pub="+pub);
+			readFile(document.getElementById("rmchatimg").files[0]);
+      }else{
+//			alert("in sendimg, pub="+pub);
+			rreadFile(document.getElementById("prchatimg").files[0]);
+		}
+		
+	});
+	
+	function confirmfun(room, pub) {
+		if (confirm("You are invited to " + room)){
+			if (pub) {
+				var pass = roominfo[room].password;
+				$("#"+room+"psw").val(pass);
+         }
+			enroom(room, pub);
+		} 
+   }
+	
+	function readFile(file) {
+		var reader = new FileReader();
+		reader.onload = readSuccess;
+		function readSuccess(evt) {
+			var src = evt.target.result;
+			$('#chatlog').css("background-image", "url("+src+")"); 
+      }
+		reader.readAsDataURL(file);
+   }
+	
+	function rreadFile(file) {
+		var reader = new FileReader();
+		reader.onload = readSuccess;
+		function readSuccess(evt) {
+			var src = evt.target.result;
+			$('#perchatlog').css("background-image", "url("+src+")"); 
+      }
+		reader.readAsDataURL(file);
+   }
+	
+
+	
+   function sendMessage(){
+      var msg = document.getElementById("message_input").value;
+      socketio.emit("message_to_server", {message:msg});
+   }
+	
+	function sendPriMsg() {
+      var sendto = document.getElementById("towho").value;
+		var msg = document.getElementById("primsg_input").value;
+//		alert("sendPriMsg, to:"+ sendto+", msg: "+ msg);
+		if (!sendto) {
+			alert("Who you want to send this private message?");   
+      }else if (!msg) {
+         alert("Type some message...");
+      }else{
+			socketio.emit("sendPriMsg", {sendto:sendto, message:msg});
+		}
+   }
+      
+   function login() {
+       //event.preventDefault();
+//      alert("login function");
+      var msg = document.getElementById("nickname").value;
+      if (!document.getElementById("nickname").value) {
+         alert("please input nickname");
+      }else{
+//            var msg = document.getElementById("nickname").value;
+//         alert("we in login function and "+ msg);
+         socketio.emit('login', {message:msg}, function(data){
+//            alert("we emit login and the data is "+ data);
+            if(data){
+//               alert("login success!");
+//               document.getElementById("div#login").style.display = 'none';
+//               document.getElementById("div#main").style.display = 'block';
+               curuser = msg;
+               $("#login").hide();
+               $("#main").show();
+					document.getElementById("sayhi").innerHTML = "Hi, "+msg;
+					
+//               alert(document.getElementById("login").style.display+"+"+document.getElementById("main").style.display);
+            }else{
+               alert("this nickname has been used, please try another name...");
+            }
+         });
+         $("#nickname").val('');
+      }        
+   }
+	
+	function newroom() {
+      var roomname = document.getElementById("newroomname").value;
+		var roompsw = document.getElementById("newroompsw").value;
+		if (!roomname) {
+         alert("please input room name!");
+		}else if(!roompsw){
+//			alert("you are creating a public room");
+         socketio.emit('newroom', {name:roomname, havepsw:false}, function(data){
+				if(!data){
+					alert("this room has exist!");
+				}
+			});
+      }else{
+//			alert("you are creating a private room");
+			socketio.emit('newroom', {name:roomname, havepsw:true, password:roompsw}, function(data){
+				if(!data){
+					alert("this room has exist!");	
+				}
+			});
+		}
+   }
+	
+	function enroom(toroom, havepass) {
+//		alert("function enter a new room!");
+		// if public room
+		var banlist = roominfo[toroom].ban;
+		if (banlist.includes(curuser)) {
+         alert("you have been baned from "+ toroom);
+      }else{
+			if (!havepass) {
+				socketio.emit('enroom', {room: toroom}, function(data){
+					if (!data) {
+						alert("failed to enter this public room...");
+				   }
+				});
+			}else{
+				// if private room
+				var pass = $("#"+toroom+"psw").val();
+				if (!pass) {
+					alert("This is a private room, please input password!");
+			   }else{
+					socketio.emit('enroom', {room:toroom, pass:pass}, function(data){
+						if (!data) {
+							alert("failed to enter this private room..");
+			         }
+					});
+				}
+			}	
+		}
+		
+	}
+      
+	function kickoff(kickwho) {
+		socketio.emit('kickoff', {kickwho: kickwho}, function(data){
+			if (data) {
+            alert("you just kick "+ kickwho + " off.");
+         }else{
+				alert("failed to kick "+ kickwho + " off.");
+			}
+			
+		});		
+	}
+	
+	function ban(banwho) {
+		socketio.emit('ban', {banwho: banwho}, function(data){
+			if (data) {
+				alert("you just ban "+ banwho);
+         }else{
+				alert("failed to ban "+banwho);
+			}
+		});
+   }
+	
+	function unban(unbanwho) {
+		socketio.emit('unban', {unbanwho: unbanwho}, function(data){
+			if (!data) {
+				alert("Failed to unban "+unbanwho);   
+         }
+		});
+   }
+	
+	function invite(askwho) {
+		socketio.emit('invite', {askwho:askwho}, function(data){
+			if (data) {
+            alert("have send invitation");
+         }
+		});
+   }
+	
+	
+	
+	$("#rmchatimg").change(function(){
+		//var file = document.getElementById("rmchatimg").files[0];
+		socketio.emit('image', {pub:true});
+//		readFile(document.getElementById("rmchatimg").files[0]);
+	});
+	
+	$("#prchatimg").change(function(){
+		//var file = document.getElementById("rmchatimg").files[0];
+		var pub = false;
+//		alert("when click on button the pub="+pub)
+		socketio.emit('image', {pub:pub});
+//		readFile(document.getElementById("rmchatimg").files[0]);
+	});
+	
+   $("#login_btn").click( function(e){
+		e.preventDefault();
+		login();
+	});
+	
+	$("#newroom_btn").click(function(e){
+		e.preventDefault();
+		newroom();
+	});
+	
+	$(document).on("click", ".pubroom_btn", function(e){
+		e.preventDefault();
+		var toroom =  $(this).data('id');
+//		alert("click public btn, toroom: "+toroom);
+		var havepass = false;
+		enroom(toroom, havepass);
+	});
+	
+	$(document).on("click", ".priroom_btn", function(e){
+		e.preventDefault();
+		var toroom = $(this).data('id');
+		var havepass = true;
+		enroom(toroom, havepass);
+	});
+	
+	$(document).on("click", ".user", function(e){
+		e.preventDefault();
+		var towho = $(this).data('id');
+		$("#towho").val(towho);	
+	});
+	
+	$(document).on("click", ".kick", function(e){
+		e.preventDefault();
+		var kickwho = $(this).data('id');
+		kickoff(kickwho);
+	});
+	
+	$(document).on("click", ".ban", function(e){
+		e.preventDefault();
+		var banwho = $(this).data('id');
+		ban(banwho);
+	});
+	
+	$(document).on("click", ".unban", function(e){
+		e.preventDefault();
+		var unbanwho = $(this).data('id');
+		unban(unbanwho);
+	});
+	
+	$(document).on("click", ".invite", function(e){
+		e.preventDefault();
+		var askwho = $(this).data('id');
+		invite(askwho);
+	});
+	
+	$("#pesend").click(function(e){
+		e.preventDefault();
+		sendPriMsg();
+	});
+	
+   $("#rmsend").click(sendMessage);
+	
+	
+ 
+   </script>
+</html>
